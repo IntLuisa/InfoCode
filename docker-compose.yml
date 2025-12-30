@@ -1,0 +1,60 @@
+networks:
+  default:
+    driver: bridge
+
+# volumes:
+#   database:
+#     driver: local
+
+services:
+  composer:
+    image: composer
+    command: install
+    user: 1000:1000
+    volumes:
+      - ./:/app
+  app:
+    build:
+      context: ./
+      dockerfile: docker/app/Dockerfile
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    command: php artisan serve --host=0.0.0.0 --port=8000
+    ports:
+      - "8000:8000"
+    depends_on:
+      # - db
+      - composer
+    networks:
+      - default
+  # db:
+  #   image: "mysql:8.0"
+  #   restart: no
+  #   ports:
+  #     - 3306:3306
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: root
+  #     MYSQL_DATABASE: ${DB_DATABASE}
+  #     MYSQL_USER: ${DB_USERNAME}
+  #     MYSQL_PASSWORD: ${DB_PASSWORD}
+  #   volumes:
+  #     - database:/var/lib/mysql
+  #   env_file:
+  #     - ./.env
+  #   networks:
+  #     - default
+  node:
+    build:
+      context: ./
+      dockerfile: docker/node/Dockerfile
+    working_dir: /usr/src/app
+    command: npm run dev
+    user: 1000:1000
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - "5173:5173"
+    networks:
+      - default

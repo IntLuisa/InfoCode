@@ -1,0 +1,10 @@
+# RNF-005: Escalabilidade
+
+**Descrição:** O sistema deve ser capaz de lidar com um aumento gradual no número de alunos que utilizam as funcionalidades sem comprometer o desempenho.
+
+**Critérios de Aceitação:**
+
+- O sistema deve ser escalável, permitindo o aumento da capacidade de processamento e armazenamento conforme necessário.
+- Deve ser monitorado o desempenho à medida que o número de usuários aumenta, e a infraestrutura deve ser dimensionada de acordo.
+
+Voltar para [Requisitos](../README.md)

@@ -1,0 +1,10 @@
+# RNF-002: Segurança de Dados
+
+**Descrição:** Os dados relacionados aos dias de estudo e ofensiva do aluno devem ser armazenados de forma segura e protegidos contra acesso não autorizado.
+
+**Critérios de Aceitação:**
+
+- Os dados do aluno devem ser criptografados durante a transmissão e armazenados de forma segura no servidor.
+- Deve haver mecanismos de autenticação e autorização para garantir que apenas o aluno autorizado possa acessar seus dados.
+
+Voltar para [Requisitos](../README.md)

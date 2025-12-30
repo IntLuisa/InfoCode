@@ -1,0 +1,123 @@
+body {
+    font-family: DejaVu Sans, sans-serif;
+    font-size: 12px;
+}
+
+.title {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 10px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+body>.title {
+    margin-top: 30px;
+}
+
+.section-title {
+    font-weight: bold;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th,
+td {
+    border: 1px solid #333;
+    padding: 6px;
+    text-align: left;
+}
+
+.right {
+    text-align: right;
+}
+
+.center {
+    text-align: center;
+}
+
+.justify {
+    text-align: justify;
+}
+
+.no-border td,
+.no-border {
+    border: none;
+}
+
+.truncate {
+    white-space: nowrap
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+.client-table th {
+    width: auto;
+    white-space: nowrap;
+}
+
+.client-table td {
+    padding: 6px 12px;
+}
+
+.signature {
+    margin-top: 120px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.signature-line {
+    width: 50%;
+    margin: 0 auto;
+    border: 1px solid #000;
+}
+
+.signature-text {
+    margin: 2px 0;
+    font-size: 12px;
+}
+
+.container-flex {
+    display: inline-block;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.highlight {
+    font-weight: bold;
+    border: none;
+}
+
+.table-title {
+    font-weight: bold;
+    text-align: center;
+    border: none;
+}
+
+
+.signature-subtitle {
+    text-align: center;
+    font-size: 10px;
+    margin-top: 5px;
+    font-weight: bold;
+}
+
+.observations-model {
+    border: none;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.email {
+    color: #0000EE;
+    text-decoration: underline;
+}

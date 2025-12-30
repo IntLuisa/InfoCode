@@ -1,0 +1,10 @@
+# RNF-003: Usabilidade
+
+**Descrição:** As funcionalidades devem ser intuitivas e de fácil uso, tornando-a acessível para alunos de diferentes níveis de habilidade tecnológica.
+
+**Critérios de Aceitação:**
+
+- A interface do usuário deve ser projetada de forma amigável, com instruções claras e elementos de fácil compreensão.
+- Deve haver suporte para acessibilidade, garantindo que alunos com necessidades especiais possam utilizar a funcionalidade sem dificuldades.
+
+Voltar para [Requisitos](../README.md)

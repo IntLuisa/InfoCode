@@ -1,0 +1,10 @@
+# RNF-004: Disponibilidade
+
+**Descrição:** O sistema deve estar disponível para acesso dos alunos de forma confiável, minimizando o tempo de inatividade não planejado.
+
+**Critérios de Aceitação:**
+
+- O sistema deve ter uma taxa de disponibilidade de pelo menos 99,5% do tempo, excluindo períodos de manutenção programada.
+- Os períodos de manutenção programada devem ser comunicados aos alunos com antecedência.
+
+Voltar para [Requisitos](../README.md)
