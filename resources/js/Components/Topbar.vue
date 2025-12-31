@@ -148,7 +148,7 @@ const openNotification = (url) => {
         </div>
     </nav>
 
-    <DialogModal :show="showModalNotificacion && notifications.length" @close="showModalNotificacion = false">
+    <DialogModal  :show="showModalNotificacion && notifications.length > 0" @close="showModalNotificacion = false">
         <template #title>
             <div class="flex justify-between">
                 <div class="flex items-center gap-2">

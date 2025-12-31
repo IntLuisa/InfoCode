@@ -6,6 +6,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PartController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ContractController;
+use App\Http\Controllers\BudgetController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laragear\WebAuthn\Http\Routes as WebAuthnRoutes;
@@ -51,4 +53,5 @@ Route::middleware([
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
 
     Route::resource('clients', ClientController::class);
+    Route::resource('budgets', BudgetController::class);
 });
