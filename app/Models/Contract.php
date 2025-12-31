@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+
+
 class Contract extends Model
 {
     use Loggable, HasFactory;
@@ -17,14 +19,14 @@ class Contract extends Model
     ];
 
     protected $fillable = [
-        'service_id',
+        'budget_id',
         'contract',
         'approved',
         'type',
     ];
 
-    public function service(): HasOne
+    public function budget(): HasOne
     {
-        return $this->hasOne(Service::class, 'id', 'service_id');
+        return $this->hasOne(Budget::class, 'id', 'budget_id');
     }
 }

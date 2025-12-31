@@ -11,6 +11,6 @@ class ContractPolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, [UserPolicy::ROLE_BOARD, UserPolicy::ROLE_MANAGER]);
+        return true;
     }
 }

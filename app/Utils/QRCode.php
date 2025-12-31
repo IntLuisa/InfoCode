@@ -14,9 +14,14 @@ class QRCode
 
     static function toUrl($string, $backgroundColor = [255, 255, 255])
     {
-        $qrCode = new QR("$string");
+        if (empty($string)) {
+            return ''; // ou algum QR padrão, ou um placeholder
+        }
+
+        $qrCode = new QR($string);
         $qrCode->disableBorder();
         $output = new Output\Png();
         return base64_encode($output->output($qrCode, 200, $backgroundColor, [0, 0, 0]));
     }
+
 }

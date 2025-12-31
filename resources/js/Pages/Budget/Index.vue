@@ -136,8 +136,85 @@ const translaterServiceType = (serviceType) => {
       return 'Serviço'
   }
 }
-</script>
 
+const getContract = (budget) => {
+    contract.value = {
+        id: budget.contract?.id || null,
+        budget_id: budget.id, // aqui é o ID do orçamento
+        contract: budget.contract?.contract || clausesContractDefault.value,
+        approved: budget.contract?.approved || false,
+    };
+
+    showModalContract.value = true
+}
+
+
+const updateContract = () => {
+    axios.post(route("contracts.store"), { ...contract.value })
+        .then(response => response.data)
+        .then(data => {
+            contract.value.id = data.id;
+            const index = props.services.findIndex(({ data: { id: _id } }) => _id === data.service_id);
+            props.services[index].data.contract = data;
+            alert.value = {
+                show: true,
+                message: 'Contrato salvo com sucesso',
+                type: 'success',
+            };
+        })
+}
+const printContract = () => {
+    window.open(route("contracts.pdf", { id: contract.value.id, type: contract.value.type }), "_blank");
+};
+const contract = ref({});
+const showModalContract = ref(false);
+const clausesContractDefault = ref(`CONTRATO DE PRESTAÇÃO DE SERVIÇOS DE CONSULTORIA E LEVANTAMENTO DE REQUISITOS
+
+CONTRATADA: [NOME DA SUA SOFTHOUSE], CNPJ [00.000.000/0000-00], com sede em [Endereço Completo].
+CONTRATANTE: [NOME DO CLIENTE OU EMPRESA], CPF/CNPJ [000.000.000-00], residente ou sediada em [Endereço Completo].
+
+CLÁUSULA PRIMEIRA – DO OBJETO
+1.1. O presente contrato tem como objeto a prestação de serviços de consultoria técnica para o Levantamento de Requisitos e Estruturação de Projeto de Software (cujo nome comercial e técnico será definido ao final deste processo).
+
+CLÁUSULA SEGUNDA – DA METODOLOGIA E ACESSO À INFORMAÇÃO
+2.1. Para a execução do serviço, a CONTRATADA realizará entrevistas diagnósticas com o proprietário da empresa CONTRATANTE e com os líderes de cada área pertinente ao projeto.
+2.2. DA AGENDA: A CONTRATANTE compromete-se a viabilizar a agenda dos líderes e gestores em um prazo máximo de [7] dias úteis após a assinatura deste contrato.
+2.3. A indisponibilidade dos líderes ou o adiamento constante das reuniões por parte da CONTRATANTE desobriga a CONTRATADA de cumprir o prazo de entrega original, podendo o contrato ser pausado ou dado como concluído com base nas informações obtidas até o momento.
+
+CLÁUSULA TERCEIRA – DAS REVISÕES E ALINHAMENTO FINAL
+3.1. Após a coleta de dados, será realizada uma única Reunião de Alinhamento e Apresentação, com duração estimada de até [4] horas.
+3.2. Durante esta reunião, a CONTRATANTE poderá solicitar todos os ajustes, revisões e correções necessários para o fechamento do escopo.
+3.3. DO ESCOPO FECHADO: Após o encerramento da reunião mencionada no item 3.1 e a entrega do documento final, qualquer nova alteração, inclusão de funcionalidade ou mudança de regra de negócio será considerada Item Extra, não estando incluída neste contrato e sujeita a novo orçamento de desenvolvimento.
+
+CLÁUSULA QUARTA – DOS VALORES E CONDIÇÃO COMERCIAL
+4.1. Pela execução do levantamento de requisitos, a CONTRATANTE pagará à CONTRATADA o valor fixo de R$ [Inserir Valor X], em parcela única, no ato da assinatura deste instrumento.
+4.2. BONIFICAÇÃO POR FIDELIDADE: Caso a CONTRATANTE opte por contratar o desenvolvimento do software com a CONTRATADA, o valor pago por este levantamento (R$ Valor X) será integralmente bonificado, sendo descontado do valor total do sistema.
+4.3. PRAZO DA CONDIÇÃO: A bonificação descrita no item 4.2 terá validade de 7 (sete) dias corridos após a entrega do levantamento final. Caso o contrato de desenvolvimento não seja assinado neste prazo, o valor do levantamento será considerado como pagamento definitivo pela consultoria prestada, sem direito a desconto futuro.
+
+CLÁUSULA QUINTA – PROPRIEDADE INTELECTUAL E SIGILO
+5.1. Após a quitação do valor estipulado na Cláusula 4.1, a CONTRATADA entregará o documento de especificação técnica à CONTRATANTE, que passará a ter a propriedade intelectual sobre o documento.
+5.2. As partes comprometem-se a manter sigilo absoluto sobre informações comerciais e regras de negócio trocadas durante a execução deste contrato.
+
+CLÁUSULA SEXTA - DO FORO
+6.1. Para dirimir quaisquer controvérsias oriundas do presente contrato, as partes elegem o foro da comarca de [Sua Cidade/UF].
+
+[Cidade/UF], [Data].
+
+__________________________________________
+[NOME DA SUA SOFTHOUSE]
+
+__________________________________________
+[NOME DO CLIENTE]`);
+const showModalModules = ref(false)
+const addModules = (budget) => {
+    form.id = budget.id
+    form.modules = budget.modules
+    showModalModules.value = true
+}
+</script>
+<!-- cod. vai ser o id mas um math.random salvo no bando de dados -->
+<!-- No modal da criação do LR colocar checkbox selecionar a necessidade de designer, hospedagem, dominio, etc -->
+<!-- campos dos modulos nome do modulo, detalhamento, horas previstas trabalhadas, codigo do modulo, valor do modulo  -->
 
 <template>
   <AppLayout>
@@ -231,7 +308,7 @@ const translaterServiceType = (serviceType) => {
                                             {{ translaterServiceType(budget.service_type) }}
                                         </td>
 
-                                        <td class="p-2 text-center">
+                                        <td class="p-2 text-center w-64">
                                             <span
                                                 class="px-2 py-1 rounded-full text-xs font-semibold"
                                                 :class="{
@@ -248,17 +325,26 @@ const translaterServiceType = (serviceType) => {
                                             </span>
                                         </td>
 
-                                        <td class="p-2 text-end space-x-2">
+                                        <td class="grid grid-cols-2 gap-2 my-2 w-24 text-right">
+                                            <button
+                                                @click="addModules(budget)"
+                                                class="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700 items-center">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
                                             <button
                                                 @click="update(budget)"
                                                 class="px-3 py-1 text-sm bg-primary-600 text-white rounded hover:bg-primary-700">
                                                 <i class="fas fa-pen"></i>
                                             </button>
-
                                             <button
                                                 @click="confirmDestroy(budget)"
                                                 class="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700">
                                                 <i class="fas fa-trash"></i>
+                                            </button>
+                                            <button
+                                                type="button" @click="getContract(budget)"
+                                                class="px-3 py-1 text-sm bg-yellow-600 text-white rounded hover:bg-yellow-700">
+                                                <i class="fa-solid fa-file-signature "></i>
                                             </button>
                                         </td>
 
@@ -380,8 +466,6 @@ const translaterServiceType = (serviceType) => {
                     >
                     {{ form.id ? 'Atualizar' : 'Salvar' }}
                 </button>
-
-
             </div>
         </template>
     </DialogModal>
@@ -437,5 +521,134 @@ const translaterServiceType = (serviceType) => {
             Deseja realmente excluir <strong class="text-red-600">{{ form.id }}</strong>?
         </template>
     </ConfirmationModal>
+    <DialogModal :show="showModalContract" @close="showModalContract = false">
+        <template #title>
+            <div class="flex items-center justify-between">
+                <h2 class="text-xl font-semibold mb-4">{{ 'Contrato | Pedido n. ' + contract.service_id }}</h2>
+                <div class="flex gap-4 items-center">
+                    <label class="inline-flex items-center cursor-pointer ms-1">
+                        <input type="checkbox" v-model="contract.approved" :checked="contract.approved"
+                            class="sr-only peer">
+                        <div
+                            class="me-2 relative w-7 h-4 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600">
+                        </div>
+                        <span class="text-base font-semibold text-gray-900 dark:text-white">Aprovado</span>
+                    </label>
+                </div>
+            </div>
+        </template>
+        <template #content>
+            <form>
+                <div class="space-y-2 overflow-y-auto max-h-[calc(100vh-200px)]">
+                    <div>
+                        <textarea :disabled="contract.approved" v-model="contract.contract" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg 
+                                focus:ring-primary-600 focus:border-primary-600 block w-full p-1.5 
+                                dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 
+                                dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            rows="20"></textarea>
+                    </div>
+                </div>
+            </form>
+        </template>
+        <template #footer>
+            <div class="flex w-full items-center justify-between">
+                <button @click="showModalContract = false"
+                    class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800"
+                    type="button">
+                    Cancelar
+                </button>
+                <div class="flex gap-4">
+                    <button v-if="contract.id" @click="printContract()"
+                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                        type="button">
+                        Imprimir
+                    </button>
+                    <button @click="updateContract()"
+                        class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800"
+                        type="button">
+                        Salvar
+                    </button>
+                </div>
+            </div>
+        </template>
+    </DialogModal>
+
+    <DialogModal :show="showModalModules" @close="showModalModules = false">
+        <template #title>
+            <div class="flex items-center justify-between">
+                <h2 class="text-xl font-semibold mb-4">Criar Módulos</h2>
+            </div>
+        </template>
+
+        <template #content>
+            <form @submit.prevent="createModules">
+                <div class="space-y-2 overflow-y-auto max-h-[calc(100vh-200px)]">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-primary-200">
+                                Codigo
+                            </label>
+                            <input type="text" v-model="form.module_code"
+                                class=" bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" />
+                        </div>
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-primary-200">
+                                Nome
+                            </label>
+                            <input type="text" v-model="form.module_name"
+                                class=" bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" />
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-primary-200">
+                            Descrição
+                        </label>
+                        <textarea v-model="form.module_description" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg 
+                                focus:ring-primary-600 focus:border-primary-600 block w-full p-1.5 
+                                dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 
+                                dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            rows="20"></textarea>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-primary-200">
+                                Quantidade de horas previstas
+                            </label>
+                            <input type="text" v-model="form.module_hours" placeholder="2hr30min = 2,5"
+                                class=" bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" />
+                        </div>
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-primary-200">
+                                Valor(R$)
+                            </label>
+                            <input type="text" v-model="form.module_value"
+                                class=" bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" />
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </template>
+
+        <template #footer>
+            <div class="flex w-full items-center justify-between">
+                <button @click="showModalModules = false"
+                    class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800"
+                    type="button">
+                    Cancelar
+                </button>
+                <button
+                    type="submit"
+                    form="budget-form"
+                    :disabled="processing"
+                    class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800"
+
+                    >
+                    {{ form.id ? 'Atualizar' : 'Salvar' }}
+                </button>
+            </div>
+        </template>
+
+    </DialogModal>
     <!-- <Alert v-if="alert.show" :message="alert.message" @remove="alert.show = false" :type="alert.type" /> -->
 </template>

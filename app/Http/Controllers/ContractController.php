@@ -11,7 +11,9 @@ class ContractController extends Controller
 {
     use AuthorizesRequests;
 
-    public function __construct(protected ContractService $contractService) {}
+    public function __construct(protected ContractService $contractService)
+    {
+    }
 
     public function store(Request $request)
     {
@@ -21,7 +23,6 @@ class ContractController extends Controller
 
     public function pdf(Request $request, string $id)
     {
-        $type = $request->get('type', 'krenke');
-        return $this->contractService->pdf($id, $type);
+        return $this->contractService->pdf($id);
     }
 }

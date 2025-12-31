@@ -53,5 +53,9 @@ Route::middleware([
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
 
     Route::resource('clients', ClientController::class);
+
     Route::resource('budgets', BudgetController::class);
+
+    Route::post('contracts', [ContractController::class, 'store'])->name('contracts.store');
+    Route::get('contracts/{id}/pdf', [ContractController::class, 'pdf'])->name('contracts.pdf');
 });
