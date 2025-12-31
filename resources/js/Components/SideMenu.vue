@@ -51,6 +51,14 @@ const logout = () => {
                                 <span class="flex-1 ml-3 text-left whitespace-nowrap">Clientes</span>
                             </Link>
                         </li>
+                        <li >
+                            <Link :href="route('budgets.index', { order_by: { asc: 'name' } })"
+                                :class="route().current('budgets.index') ? 'dark:bg-gray-700 bg-gray-100' : ''"
+                                class="flex items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">
+                                <i class="fa-solid fa-arrow-up-right-dots text-gray-400"></i>
+                                <span class="flex-1 ml-3 text-left whitespace-nowrap">Diagnósticos</span>
+                            </Link>
+                        </li>
                         <li v-if="user_level >= 2">
                             <Link :href="route('parts.index', { order_by: { asc: 'name' } })"
                                 :class="route().current('parts.index') ? 'dark:bg-gray-700 bg-gray-100' : ''"
