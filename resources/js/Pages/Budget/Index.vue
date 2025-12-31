@@ -6,6 +6,7 @@ import { router } from '@inertiajs/vue3'
 import Alert from '@/Components/Alert.vue'
 import { defineProps } from 'vue'
 import Pagination from '@/Components/Pagination.vue'
+import ConfirmationModal from '@/Components/ConfirmationModal.vue'
 
 
 const props = defineProps({
@@ -15,6 +16,7 @@ const props = defineProps({
 const title = 'Diagnósticos'
 const showModal = ref(false)
 const showModalSearch = ref(false)
+const showConfirm = ref(false)
 const formHtml = ref(null)
 const processing = ref(false)
 
@@ -32,26 +34,20 @@ const form = reactive({
 
 })
 
-
 const collapsed = reactive({
-  client: false,
+  client: true,
   description: false,
-  details: false,
 })
 
-// cliente selecionado
 const selectedClient = reactive({
   name: '',
   document: '',
 })
 
-// lista fake por enquanto (antes do banco)
 const clients = reactive({
   data: [],
-  last_page: 1,
 })
 
-// métodos base (stubs)
 const search = () => {}
 const reset = () => {
   input_search.value = ''
@@ -62,7 +58,6 @@ const submit = () => {
   processing.value = true
 
   if (form.id) {
-    // UPDATE
     router.put(route('budgets.update', form.id), form, {
       onFinish: () => processing.value = false,
       onSuccess: () => {
@@ -71,7 +66,6 @@ const submit = () => {
       }
     })
   } else {
-    // CREATE
     router.post(route('budgets.store'), form, {
       onFinish: () => processing.value = false,
       onSuccess: () => {
@@ -82,7 +76,16 @@ const submit = () => {
   }
 }
 
+const update = (budget) => {
+  form.id = budget.id
+  form.client_id = budget.client_id
+  form.status = budget.status
+  form.project_name = budget.project_name
+  form.service_type = budget.service_type
+  form.note = budget.note
 
+  showModal.value = true
+}
 const setClient = (index) => {
   const client = clients.data[index]
 
@@ -90,7 +93,7 @@ const setClient = (index) => {
   selectedClient.name = client.name
   selectedClient.document = client.document
 
-  form.client_id = client.id // 👈 ESSENCIAL
+  form.client_id = client.id
 
   showModalSearch.value = false
 }
@@ -102,7 +105,7 @@ const searchClient = async (page = 1) => {
       params: {
         search: input_search_client.value,
         page: page,
-        json: true, // 👈 ISSO AQUI É O PULO DO GATO
+        json: true, 
       }
     })
 
@@ -110,6 +113,27 @@ const searchClient = async (page = 1) => {
     clients.last_page = response.data.last_page
   } catch (error) {
     console.error('Erro ao buscar clientes', error)
+  }
+}
+
+const confirmDestroy = (budget) => {
+  form.id = budget.id
+  showConfirm.value = true
+}
+
+const destroy = (id) => {
+  showConfirm.value = false
+  router.delete(route('budgets.destroy', id))
+}
+
+const translaterServiceType = (serviceType) => {
+  switch (serviceType) {
+    case 'service':
+      return 'Serviço'
+    case 'product':
+      return 'Produto'
+    default:
+      return 'Serviço'
   }
 }
 </script>
@@ -191,27 +215,22 @@ const searchClient = async (page = 1) => {
                                         :key="budget.id"
                                         class="hover:bg-gray-100 dark:hover:bg-gray-700">
 
-                                        <!-- ID -->
                                         <td class="p-2 text-center font-semibold">
                                             {{ budget.id }}
                                         </td>
 
-                                        <!-- Cliente + Projeto -->
                                         <td class="p-2 text-sm">
                                                 {{ budget.client?.name }} / {{ budget.client?.codename }}
                                         </td>
 
-                                        <!-- Codename -->
                                         <td class="p-2 uppercase text-sm">
                                             {{ budget.project_name }}
                                         </td>
 
-                                        <!-- Tipo de serviço -->
                                         <td class="p-2 text-sm">
-                                            {{ budget.service_type }}
+                                            {{ translaterServiceType(budget.service_type) }}
                                         </td>
 
-                                        <!-- Status -->
                                         <td class="p-2 text-center">
                                             <span
                                                 class="px-2 py-1 rounded-full text-xs font-semibold"
@@ -229,7 +248,6 @@ const searchClient = async (page = 1) => {
                                             </span>
                                         </td>
 
-                                        <!-- Ações -->
                                         <td class="p-2 text-end space-x-2">
                                             <button
                                                 @click="update(budget)"
@@ -238,7 +256,7 @@ const searchClient = async (page = 1) => {
                                             </button>
 
                                             <button
-                                                @click="deleteBudget(budget.id)"
+                                                @click="confirmDestroy(budget)"
                                                 class="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700">
                                                 <i class="fas fa-trash"></i>
                                             </button>
@@ -357,7 +375,8 @@ const searchClient = async (page = 1) => {
                     type="submit"
                     form="budget-form"
                     :disabled="processing"
-                    class="text-white bg-green-700 ..."
+                    class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800"
+
                     >
                     {{ form.id ? 'Atualizar' : 'Salvar' }}
                 </button>
@@ -410,5 +429,13 @@ const searchClient = async (page = 1) => {
             </div>
         </template>
     </DialogModal>
+    <ConfirmationModal :show="showConfirm" @close="showConfirm = false" @confirm="destroy(form.id)">
+        <template #title>
+            Excluir Orçamento
+        </template>
+        <template #content>
+            Deseja realmente excluir <strong class="text-red-600">{{ form.id }}</strong>?
+        </template>
+    </ConfirmationModal>
     <!-- <Alert v-if="alert.show" :message="alert.message" @remove="alert.show = false" :type="alert.type" /> -->
 </template>
