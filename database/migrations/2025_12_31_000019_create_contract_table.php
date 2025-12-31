@@ -6,19 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
 
-    // public function up(): void
-    // {
-    //     Schema::create('contracts', function (Blueprint $table) {
-    //         $table->id();
-    //         $table->foreignId(column: 'budget_id')->constrained('budgets')->onDelete('cascade');
-    //         $table->text('contract');
-    //         $table->boolean('approved')->default(true);
-    //         $table->timestamps();
-    //     });
-    // }
+    public function up(): void
+    {
+        Schema::create('contracts', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId(column: 'budget_id')->constrained('budgets')->onDelete('cascade');
+            $table->text('contract');
+            $table->boolean('approved')->default(true);
+            $table->timestamps();
+        });
+    }
 
-    // public function down(): void
-    // {
-    //     Schema::dropIfExists('contracts');
-    // }
+    public function down(): void
+    {
+        Schema::dropIfExists('contracts');
+    }
 };
