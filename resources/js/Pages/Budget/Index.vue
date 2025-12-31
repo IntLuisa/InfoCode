@@ -67,6 +67,7 @@ const submit = () => {
       onFinish: () => processing.value = false,
       onSuccess: () => {
         showModal.value = false
+        resetForm()
       }
     })
   } else {
@@ -75,36 +76,12 @@ const submit = () => {
       onFinish: () => processing.value = false,
       onSuccess: () => {
         showModal.value = false
+        resetForm()
       }
     })
   }
 }
-const resetForm = () => {
-  form.id = null
-  form.client_id = null
-  form.status = 'pending'
-  form.project_name = ''
-  form.service_type = ''
-  form.note = ''
 
-  selectedClient.name = ''
-  selectedClient.document = ''
-}
-
-
-const update = (budget) => {
-  form.id = budget.id
-  form.client_id = budget.client_id
-  form.status = budget.status
-  form.project_name = budget.project_name
-  form.service_type = budget.service_type
-  form.note = budget.note
-
-  selectedClient.name = budget.client?.name || ''
-  selectedClient.document = budget.client?.document || ''
-
-  showModal.value = true
-}
 
 const setClient = (index) => {
   const client = clients.data[index]
@@ -204,6 +181,9 @@ const searchClient = async (page = 1) => {
                                         <th scope="col"
                                             class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                                         </th>
+                                        <th scope="col"
+                                            class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white dark:bg-gray-800 text-white">
@@ -290,7 +270,7 @@ const searchClient = async (page = 1) => {
             </div>
         </template>
         <template #content>
-            <form ref="formHtml" @submit.prevent="submit">
+            <form ref="formHtml" id="budget-form" @submit.prevent="submit">
                 <div class="space-y-2 overflow-y-auto max-h-[calc(100vh-200px)]">
 
                     <div class="flex items-center justify-between">
@@ -373,11 +353,16 @@ const searchClient = async (page = 1) => {
                     type="button">
                     Cancelar
                 </button>
-                <button @click="formHtml.requestSubmit()"
-                    class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800"
-                    type="button">
-                    Salvar
+                <button
+                    type="submit"
+                    form="budget-form"
+                    :disabled="processing"
+                    class="text-white bg-green-700 ..."
+                    >
+                    {{ form.id ? 'Atualizar' : 'Salvar' }}
                 </button>
+
+
             </div>
         </template>
     </DialogModal>

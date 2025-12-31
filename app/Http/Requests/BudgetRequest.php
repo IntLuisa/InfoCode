@@ -24,24 +24,9 @@ class BudgetRequest extends FormRequest
         return [
             'client_id' => 'required|exists:clients,id',
             'note' => 'nullable|string',
-            'items' => 'required|array',
-            'items.*.item_id' => 'required|integer',
-            'items.*.item_name' => 'required|string',
-            'items.*.item_type' => 'required|string',
-            'items.*.item_code' => 'required|string',
-            'items.*.amount' => 'required|numeric',
-            'items.*.add_delivery' => 'nullable|boolean',
-            'items.*.quantity' => 'required|numeric|min:0.01',
-            'observations' => 'nullable|string',
-            'guarantees' => 'required|string',
-            'days_valid_proposal' => 'nullable|integer|min:0',
-            'percentage_payment' => 'nullable|numeric|min:0|max:100',
-            'free_delivery' => 'nullable|boolean',
-            'show_delivery' => 'nullable|boolean',
-            'veicule_type' => 'nullable|string',
-            'mileage' => 'nullable',
-            'discount' => 'nullable|numeric',
-            'status' => 'string|in:aberto,fechado,pending,canceled',
+            'project_name' => 'nullable|string',
+            'service_type' => 'nullable|string',
+            'status' => 'nullable|string',
         ];
     }
 }

@@ -31,19 +31,35 @@ class BudgetController extends Controller
     public function store(BudgetRequest $request)
     {
         $this->authorize('create', Budget::class);
-        return $this->budgetService->store($request);
+
+        $this->budgetService->store($request);
+
+        return redirect()
+            ->route('budgets.index')
+            ->with('success', 'Projeto criado com sucesso!');
     }
 
     public function update(BudgetRequest $request, string $id)
     {
         $this->authorize('update', Budget::class);
-        return $this->budgetService->update($request, $id);
+
+        $this->budgetService->update($request, $id);
+
+        return redirect()
+            ->route('budgets.index')
+            ->with('success', 'Projeto atualizado com sucesso!');
     }
+
 
     public function destroy(string $id)
     {
         $this->authorize('delete', Budget::class);
-        return $this->budgetService->delete($id);
+
+        $this->budgetService->delete($id);
+
+        return redirect()
+            ->back()
+            ->with('success', 'Projeto removido com sucesso!');
     }
 
     public function duplicate(Request $request, string $id)
